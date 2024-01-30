@@ -13,4 +13,13 @@ const create = async ({ displayName, email, password, image }) => {
   return { status: 'CREATED', data: { token } };
 }; 
 
-module.exports = { create };
+const findAll = async () => {
+  const dataValues = await User
+    .findAll({ attributes: ['id', 'displayName', 'email', 'image'] });
+
+  const users = dataValues.map((user) => user.dataValues);
+  console.log(users);
+  return { status: 'OK', data: users }; 
+};
+
+module.exports = { create, findAll };
