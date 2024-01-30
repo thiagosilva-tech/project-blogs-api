@@ -1,21 +1,16 @@
 const { User } = require('../models');
 const { generateToken } = require('./auth.service');
 
-const create = async (userData) => {
-  const userExists = await User.findOne({ where: { email: userData.email } });
+const create = async ({ displayName, email, password, image }) => {
+  const userExists = await User.findOne({ where: { email } });
 
   if (userExists) {
-    return { status: 'CONFLICT', message: 'User already exists' };
+    return { status: 'CONFLICT', data: { message: 'User already registered' } };
   }
-
-  const newUser = await User.create(userData);
-  
-  if (!newUser) {
-    return { status: 'SERVER_ERROR', message: 'Internal server error' }; 
-  }
+  const newUser = await User.create({ displayName, email, password, image });
 
   const token = generateToken({ id: newUser.id });
-  return { status: 'CREATED', message: token };
+  return { status: 'CREATED', data: { token } };
 }; 
 
 module.exports = { create };

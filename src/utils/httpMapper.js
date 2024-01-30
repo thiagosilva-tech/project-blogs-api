@@ -5,6 +5,7 @@ const statusCodes = {
   OK: 200,
   SERVER_ERROR: 500,
   CONFLICT: 409,
+  CREATED: 201,
 };
   
 const mapStatus = (status) => statusCodes[status] || 500;
