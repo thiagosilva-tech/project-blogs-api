@@ -7,6 +7,7 @@ const userRouter = Router();
 
 userRouter
   .post('/', validateRequiredFieldsUser, userController.create)
-  .get('/', validateToken, userController.findAll);
+  .get('/', validateToken, userController.findAll)
+  .get('/:id', validateToken, userController.findById);
 
 module.exports = userRouter;
