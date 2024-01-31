@@ -5,6 +5,12 @@ const create = async ({ name }) => {
   return { status: 'CREATED', data: dataValues };
 }; 
 
+const findAll = async () => {
+  const categories = await Category.findAll();
+  return { status: 'OK', data: categories };
+};
+
 module.exports = {
   create,
+  findAll,
 };
