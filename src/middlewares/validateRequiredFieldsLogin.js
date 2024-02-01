@@ -3,8 +3,7 @@ const validateRequiredFieldsLogin = (req, res, next) => {
   if (!email || !password) {
     return res.status(400).json({ message: 'Some required fields are missing' });
   }
-  
   next();
 };
   
-module.exports = { validateRequiredFieldsLogin };
+module.exports = validateRequiredFieldsLogin;

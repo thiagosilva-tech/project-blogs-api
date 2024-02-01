@@ -1,4 +1,4 @@
-const { decodeToken } = require('../services/auth.service');
+const { authService } = require('../services');
 
 const validateToken = (req, res, next) => {
   const { authorization } = req.headers;
@@ -8,12 +8,12 @@ const validateToken = (req, res, next) => {
     
   const [, token] = authorization.split(' ');
   try {
-    const decoded = decodeToken(token);
-    res.locals.user = decoded;
+    const decoded = authService.decodeToken(token);
+    req.user = decoded.id;
     next();
   } catch (erro) {
     return res.status(401).json({ message: 'Expired or invalid token' });
   }
 };
 
-module.exports = { validateToken };
+module.exports = validateToken;

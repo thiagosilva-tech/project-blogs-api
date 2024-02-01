@@ -30,13 +30,12 @@ module.exports = {
       }},
       published: {
         type: Sequelize.DATE,
-        allowNull: false,
+        defaultValue: Sequelize.fn("NOW"),
       },
       updated: {
         type: Sequelize.DATE,
-        allowNull: false,
       },
-   });
+    }, {timestamps: false});
   },
 
   async down (queryInterface, Sequelize) {
