@@ -43,8 +43,17 @@ const findOne = async (id) => {
   return { status: 'OK', data: post };
 };
 
-module.exports = { 
-  create,
-  findAll, 
-  findOne,
+const update = async (id, { title, content }, userId) => {
+  const post = await BlogPost.findByPk(id);
+  if (!post) {
+    return { status: 'NOT_FOUND', data: { message: 'Post does not exist' } };
+  }
+  if (post.userId !== userId) {
+    return { status: 'UNAUTHORIZED', data: { message: 'Unauthorized user' } };
+  }
+  await post.update({ title, content }, attributesAndInclude);
+  const updatedPost = await BlogPost.findByPk(id, attributesAndInclude);
+  return { status: 'OK', data: updatedPost };
 };
+
+module.exports = { create, findAll, findOne, update };

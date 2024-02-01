@@ -4,7 +4,6 @@ const { loginService } = require('../services');
 const validateLogin = async (req, res) => {
   const { email, password } = req.body;
   const { status, data } = await loginService.validateLogin(email, password);
-  console.log(data.token);
   if (!data.token) {
     return res.status(mapStatus(status)).json(data);
   }
