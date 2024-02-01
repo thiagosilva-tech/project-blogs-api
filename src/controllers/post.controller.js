@@ -19,7 +19,14 @@ const findAll = async (_req, res) => {
   res.status(mapStatus(status)).json(data);
 };
 
+const findOne = async (req, res) => {
+  const { id } = req.params;
+  const { status, data } = await postService.findOne(id);
+  res.status(mapStatus(status)).json(data);
+};
+
 module.exports = {
   create,
   findAll,
+  findOne,
 };
