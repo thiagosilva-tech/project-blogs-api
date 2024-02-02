@@ -1,3 +1,4 @@
+const { Op } = require('sequelize');
 const { BlogPost, PostCategory, Category } = require('../models');
 const attributesAndInclude = require('../utils/atributesAndInclude');
 
@@ -21,17 +22,13 @@ const findAll = async () => {
 
 const findOne = async (id) => {
   const post = await BlogPost.findByPk(id, attributesAndInclude);
-  if (!post) {
-    return { status: 'NOT_FOUND', data: { message: 'Post does not exist' } };
-  }
+  if (!post) return { status: 'NOT_FOUND', data: { message: 'Post does not exist' } };
   return { status: 'OK', data: post };
 };
 
 const update = async (id, { title, content }, userId) => {
   const post = await BlogPost.findByPk(id);
-  if (!post) {
-    return { status: 'NOT_FOUND', data: { message: 'Post does not exist' } };
-  }
+  if (!post) return { status: 'NOT_FOUND', data: { message: 'Post does not exist' } };
   if (post.userId !== userId) {
     return { status: 'UNAUTHORIZED', data: { message: 'Unauthorized user' } };
   }
@@ -42,15 +39,22 @@ const update = async (id, { title, content }, userId) => {
 
 const deletePost = async (id, userId) => {
   const post = await BlogPost.findByPk(id);
-  console.log(post);
-  if (!post) {
-    return { status: 'NOT_FOUND', data: { message: 'Post does not exist' } };
-  }
+  if (!post) return { status: 'NOT_FOUND', data: { message: 'Post does not exist' } };
   if (post.userId !== userId) {
     return { status: 'UNAUTHORIZED', data: { message: 'Unauthorized user' } };
   }
   await post.destroy({ force: true });
   return { status: 'NO_CONTENT', data: { message: 'Post deleted' } };
 };
-
-module.exports = { create, findAll, findOne, update, deletePost };
+const searchTerm = async (term) => {
+  const posts = await BlogPost.findAll({
+    where: { [Op.or]: [
+      { title: { [Op.like]: `%${term}%` } },
+      { content: { [Op.like]: `%${term}%` } },
+    ] },
+    include: attributesAndInclude.include,
+    attributes: attributesAndInclude.attributes,
+  });
+  return { status: 'OK', data: posts };
+};
+module.exports = { create, findAll, findOne, update, deletePost, searchTerm };

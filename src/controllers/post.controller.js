@@ -40,10 +40,17 @@ const deletePost = async (req, res) => {
   res.status(mapStatus(status)).json(data);
 };
 
+const searchTerm = async (req, res) => {
+  const { q } = req.query;
+  const { status, data } = await postService.searchTerm(q);
+  res.status(mapStatus(status)).json(data);
+};
+
 module.exports = {
   create,
   findAll,
   findOne,
   update,
   deletePost,
+  searchTerm,
 };

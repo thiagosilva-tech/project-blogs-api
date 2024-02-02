@@ -7,6 +7,7 @@ const validateToken = require('../middlewares/validateToken');
 const postRouter = Router();
 
 postRouter
+  .get('/search', validateToken, postController.searchTerm)
   .post('/', validateRequiredFieldsPost, validateToken, postController.create)
   .get('/', validateToken, postController.findAll)
   .get('/:id', validateToken, postController.findOne)
