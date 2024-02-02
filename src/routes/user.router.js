@@ -8,6 +8,7 @@ const userRouter = Router();
 userRouter
   .post('/', validateRequiredFieldsUser, userController.create)
   .get('/', validateToken, userController.findAll)
-  .get('/:id', validateToken, userController.findById);
+  .get('/:id', validateToken, userController.findById)
+  .delete('/me', validateToken, userController.deleteUser);
 
 module.exports = userRouter;
