@@ -10,6 +10,7 @@ postRouter
   .post('/', validateRequiredFieldsPost, validateToken, postController.create)
   .get('/', validateToken, postController.findAll)
   .get('/:id', validateToken, postController.findOne)
-  .put('/:id', validateRequiredFieldsPostUpdate, validateToken, postController.update);
+  .put('/:id', validateRequiredFieldsPostUpdate, validateToken, postController.update)
+  .delete('/:id', validateToken, postController.deletePost);
 
 module.exports = postRouter;

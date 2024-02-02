@@ -1,21 +1,5 @@
-const { BlogPost, PostCategory, Category, User } = require('../models');
-
-const attributesAndInclude = {
-  attributes: ['id', 'title', 'content', 'userId', 'published', 'updated'],
-  include: [
-    {
-      model: User,
-      as: 'user',
-      attributes: ['id', 'displayName', 'email', 'image'],
-    },
-    {
-      model: Category,
-      as: 'categories',
-      through: { attributes: [] },
-      attributes: ['id', 'name'],
-    },
-  ],
-};
+const { BlogPost, PostCategory, Category } = require('../models');
+const attributesAndInclude = require('../utils/atributesAndInclude');
 
 const create = async ({ title, content, categoryIds, userId }) => {
   const categoryDb = await Category.findAll();
@@ -56,4 +40,17 @@ const update = async (id, { title, content }, userId) => {
   return { status: 'OK', data: updatedPost };
 };
 
-module.exports = { create, findAll, findOne, update };
+const deletePost = async (id, userId) => {
+  const post = await BlogPost.findByPk(id);
+  console.log(post);
+  if (!post) {
+    return { status: 'NOT_FOUND', data: { message: 'Post does not exist' } };
+  }
+  if (post.userId !== userId) {
+    return { status: 'UNAUTHORIZED', data: { message: 'Unauthorized user' } };
+  }
+  await post.destroy({ force: true });
+  return { status: 'NO_CONTENT', data: { message: 'Post deleted' } };
+};
+
+module.exports = { create, findAll, findOne, update, deletePost };

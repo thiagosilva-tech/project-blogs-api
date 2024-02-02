@@ -33,9 +33,17 @@ const update = async (req, res) => {
   res.status(mapStatus(status)).json(data);
 };
 
+const deletePost = async (req, res) => {
+  const userId = req.user;
+  const { id } = req.params;
+  const { status, data } = await postService.deletePost(id, userId);
+  res.status(mapStatus(status)).json(data);
+};
+
 module.exports = {
   create,
   findAll,
   findOne,
   update,
+  deletePost,
 };
