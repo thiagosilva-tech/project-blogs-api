@@ -3,15 +3,14 @@ const { BlogPost, PostCategory, Category } = require('../models');
 const attributesAndInclude = require('../utils/atributesAndInclude');
 
 const create = async ({ title, content, categoryIds, userId }) => {
-  const categoryDb = await Category.findAll();
-  const categoryExists = categoryDb.every((category) => categoryIds.includes(category.id));
-  if (!categoryExists) {
+  const categoriesDb = await Promise
+    .all(categoryIds.map(async (categoryId) => Category.findByPk(categoryId)));
+  if (categoriesDb.includes(null)) {
     return { status: 'BAD_REQUEST', data: { message: 'one or more "categoryIds" not found' } };
   }
   const { dataValues } = await BlogPost.create({ title, content, userId }); 
-  await Promise.all(categoryIds.map(async (categoryId) => {
-    await PostCategory.create({ categoryId, postId: dataValues.id });
-  }));
+  const postCategories = categoryIds.map((categoryId) => ({ categoryId, postId: dataValues.id }));
+  await PostCategory.bulkCreate(postCategories);
   return { status: 'CREATED', data: dataValues };
 }; 
 
